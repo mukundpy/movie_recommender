@@ -88,37 +88,6 @@ Open: http://localhost:8501
 
 ---
 
-## 🐛 Bug Fixes Applied
-
-### IndexError: positional indexers are out-of-bounds
-**Root cause:** Duplicate movie titles in the dataset made `indices[title]` return a
-Series instead of a scalar, which crashed `tfidf_matrix[Series]`.
-
-**Fix (notebook):**
-```python
-indices = pd.Series(df.index, index=df['title'])
-indices = indices[~indices.index.duplicated(keep='first')]  # ← this line
-```
-
-**Fix (backend):**
-```python
-def build_title_to_idx_map(indices):
-    for k, v in indices.items():
-        nk = _norm_title(k)
-        if nk not in title_to_idx:   # first occurrence only
-            title_to_idx[nk] = int(v)
-```
-
-### "Group Sex" recommended for "Toy Story"
-**Root cause:** TF-IDF on overview text alone can match on coincidental rare-word overlap.
-Genre information had equal weight to random description words.
-
-**Fixes:**
-1. Genres repeated 3× in `final_features` to boost their TF-IDF weight
-2. Re-ranking: `final_score = 0.60×similarity + 0.30×vote_average + 0.10×popularity`
-   — filters out low-rated obscure films even if they matched textually
-
----
 
 ## ☁️ Deploying to Render (free tier)
 
