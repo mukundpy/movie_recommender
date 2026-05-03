@@ -1,5 +1,6 @@
 import os
 import pickle
+from contextlib import asynccontextmanager
 from typing import Optional, List, Dict, Any, Tuple
 
 import numpy as np
@@ -14,7 +15,7 @@ from dotenv import load_dotenv
 # ENV
 # =========================
 load_dotenv()
-TMDB_API_KEY = os.getenv("fdbca55f76e0b4984e698c92c78f49c9")
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
 TMDB_BASE    = "https://api.themoviedb.org/3"
 TMDB_IMG_500 = "https://image.tmdb.org/t/p/w500"
@@ -29,6 +30,7 @@ if not TMDB_API_KEY:
 # =========================
 # FASTAPI APP
 # =========================
+# Lifespan is wired below after load_pickles is defined
 app = FastAPI(title="Movie Recommender API", version="3.1")
 
 app.add_middleware(
@@ -248,7 +250,6 @@ async def attach_tmdb_card_by_title(title: str) -> Optional[TMDBMovieCard]:
 # =========================
 # STARTUP: LOAD PICKLES
 # =========================
-@app.on_event("startup")
 def load_pickles():
     global df, indices_obj, tfidf_matrix, tfidf_obj, TITLE_TO_IDX
 
@@ -275,6 +276,17 @@ def load_pickles():
         raise RuntimeError("df.pkl must be a DataFrame with a 'title' column")
 
     print(f"✅ Loaded {len(df)} movies | {len(TITLE_TO_IDX)} unique titles indexed")
+
+
+@asynccontextmanager
+async def lifespan(application):
+    """Modern FastAPI lifespan: load resources on startup, cleanup on shutdown."""
+    load_pickles()
+    yield
+
+
+# Wire lifespan into the app
+app.router.lifespan_context = lifespan
 
 
 # =========================
