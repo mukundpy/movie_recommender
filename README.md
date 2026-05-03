@@ -48,10 +48,6 @@ movie_recommender/
 ```bash
 cd backend
 
-# Create .env file
-cp .env.example .env
-# Edit .env and paste your TMDB API key
-
 # Install dependencies
 pip install -r requirements.txt
 
