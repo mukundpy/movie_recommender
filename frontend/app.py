@@ -21,6 +21,23 @@ st.markdown(
 .movie-title { font-size: 0.9rem; line-height: 1.15rem; height: 2.3rem; overflow: hidden; }
 .card { border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 14px; background: rgba(255,255,255,0.7); }
 .section-header { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.4rem; }
+.author-card {
+    border: 1px solid rgba(0,0,0,0.10);
+    border-radius: 16px;
+    padding: 20px 28px;
+    background: rgba(255,255,255,0.6);
+    margin-top: 2rem;
+}
+.author-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+.author-link {
+    font-size: 0.92rem;
+    color: #3b82f6;
+    text-decoration: none;
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -369,3 +386,31 @@ elif st.session_state.view == "details":
                 st.warning("No recommendations available right now.")
     else:
         st.warning("No title available to compute recommendations.")
+
+
+# ==========================================================
+# AUTHOR SECTION
+# ==========================================================
+st.divider()
+st.markdown(
+    """
+    <div class='author-card'>
+        <div class='author-name'>👨‍💻 Built by Mukund Chaurasiya</div>
+        <div class='small-muted' style='margin-bottom: 0.75rem;'>
+            Developer · ML Enthusiast · Open Source Contributor
+        </div>
+        <div style='display: flex; gap: 1.5rem; flex-wrap: wrap;'>
+            <a class='author-link' href='mailto:chaurasiyamukund2006@gmail.com' target='_blank'>
+                📧 chaurasiyamukund2006@gmail.com
+            </a>
+            <a class='author-link' href='https://www.linkedin.com/in/mukund-chaurasiya-11a872385/' target='_blank'>
+                🔗 LinkedIn
+            </a>
+            <a class='author-link' href='https://github.com/mukundpy' target='_blank'>
+                🐙 GitHub — mukundpy
+            </a>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
